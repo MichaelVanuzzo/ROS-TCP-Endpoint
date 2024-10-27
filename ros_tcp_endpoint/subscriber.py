@@ -16,7 +16,7 @@ import rclpy
 import socket
 import re
 
-from rclpy.qos import QoSDurabilityPolicy, QoSHistoryPolicy, QoSReliabilityPolicy
+from rclpy.qos import QoSDurabilityPolicy, QoSHistoryPolicy, QoSReliabilityPolicy, Duration
 from rclpy.qos import QoSProfile
 
 from .communication import RosReceiver
@@ -43,7 +43,13 @@ class RosSubscriber(RosReceiver):
         self.tcp_server = tcp_server
         self.queue_size = queue_size
 
-        qos_profile = QoSProfile(depth=queue_size)
+        qos_profile = QoSProfile(
+            depth=queue_size,
+            reliability=QoSReliabilityPolicy.BEST_EFFORT,
+            durability=QoSDurabilityPolicy.VOLATILE,
+            history=QoSHistoryPolicy.KEEP_LAST,
+            lifespan=Duration(nanoseconds=200_000_000),
+        )
 
         # Start Subscriber listener function
         self.subscription = self.create_subscription(

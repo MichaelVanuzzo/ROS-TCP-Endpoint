@@ -167,7 +167,7 @@ class UnityTcpSender:
 
     def sender_loop(self, conn, tid, halt_event):
         s = None
-        local_queue = Queue()
+        local_queue = Queue(maxsize=10)
 
         # send a handshake message to confirm the connection and version number
         handshake_metadata = SysCommand_Handshake_Metadata()
